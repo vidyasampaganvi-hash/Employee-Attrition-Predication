@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Page Not Found — AttritionIQ{% endblock %}
+{% block content %}
+<section class="section" style="padding-top:96px;padding-bottom:120px;text-align:center;">
+  <div class="container">
+    <span class="eyebrow">404</span>
+    <h2 style="margin-top:10px;">This page took a redundancy package.</h2>
+    <p style="color:var(--slate-600);margin:14px auto 30px;max-width:46ch;">The page you're looking for doesn't exist or has moved.</p>
+    <a href="{{ url_for('home') }}" class="btn btn-primary btn-lg">Back to Dashboard</a>
+  </div>
+</section>
+{% endblock %}

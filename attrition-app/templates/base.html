@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Employee Attrition Prediction System{% endblock %}</title>
+  <meta name="description" content="HR analytics tool that predicts employee attrition risk using a Random Forest machine learning model.">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a href="{{ url_for('home') }}" class="brand">
+        <span class="brand-mark">EA</span>
+        <span>
+          Attrition<span style="color:var(--teal-500)">IQ</span>
+          <small>HR Analytics System</small>
+        </span>
+      </a>
+
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+
+      <div class="nav-links" id="navLinks">
+        <a href="{{ url_for('home') }}" class="{{ 'active' if active_page == 'home' else '' }}">Home</a>
+        <a href="{{ url_for('predict') }}" class="{{ 'active' if active_page == 'predict' else '' }}">Prediction</a>
+        <a href="{{ url_for('about') }}" class="{{ 'active' if active_page == 'about' else '' }}">About Project</a>
+        <a href="{{ url_for('contact') }}" class="{{ 'active' if active_page == 'contact' else '' }}">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="brand">
+            <span class="brand-mark">EA</span>
+            <span>AttritionIQ</span>
+          </div>
+          <p>An HR analytics system that uses a Random Forest classifier to estimate an employee's attrition risk from tenure, compensation, satisfaction, and workload signals — built to support retention conversations, not replace them.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Navigate</h4>
+          <ul>
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('predict') }}">Run a Prediction</a></li>
+            <li><a href="{{ url_for('about') }}">About the Project</a></li>
+            <li><a href="{{ url_for('contact') }}">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Project Stack</h4>
+          <ul>
+            <li><a href="#">Flask + Gunicorn</a></li>
+            <li><a href="#">scikit-learn Random Forest</a></li>
+            <li><a href="#">Vanilla JS &amp; CSS</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; {{ current_year }} AttritionIQ &mdash; Employee Attrition Prediction System. Built for educational &amp; portfolio purposes.</span>
+        <span>Predictions are probabilistic estimates, not HR decisions.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

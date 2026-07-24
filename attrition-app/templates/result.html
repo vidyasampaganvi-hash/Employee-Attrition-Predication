@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Prediction Result — AttritionIQ{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top:48px;">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">RESULT</span>
+      <h2>Prediction complete</h2>
+      <p>Scored using the trained Random Forest pipeline against the profile you submitted.</p>
+    </div>
+
+    <div class="result-shell">
+      <!-- ===== GAUGE / VERDICT CARD ===== -->
+      <div class="result-card">
+        <span class="result-badge {{ 'leave' if will_leave else 'stay' }}">
+          {% if will_leave %}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>
+          AT-RISK PROFILE
+          {% else %}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+          STABLE PROFILE
+          {% endif %}
+        </span>
+
+        <svg viewBox="0 0 240 150" width="100%" style="max-width:280px;margin:0 auto;">
+          <path d="M20,120 A100,100 0 0 1 89.10,24.92" fill="none" stroke="#17a892" stroke-width="16" stroke-linecap="round"/>
+          <path d="M89.10,24.92 A100,100 0 0 1 178.78,39.07" fill="none" stroke="#d9822b" stroke-width="16" stroke-linecap="round"/>
+          <path d="M178.78,39.07 A100,100 0 0 1 220,120" fill="none" stroke="#da5b4c" stroke-width="16" stroke-linecap="round"/>
+          <g transform="rotate({{ needle_rotation }} 120 120)">
+            <line x1="120" y1="120" x2="120" y2="34" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+          </g>
+          <circle cx="120" cy="120" r="8" fill="#ffffff"/>
+          <text x="120" y="112" text-anchor="middle" class="gauge-readout">{{ prob_leave_pct }}%</text>
+          <text x="120" y="132" text-anchor="middle" class="gauge-sublabel">ATTRITION RISK</text>
+        </svg>
+
+        <h3 class="result-headline">
+          {% if will_leave %}Likely to Leave{% else %}Likely to Stay{% endif %}
+        </h3>
+        <p class="result-sub">Model confidence: <strong style="color:#fff;">{{ confidence_pct }}%</strong></p>
+
+        <div class="result-actions" style="justify-content:center;">
+          <a href="{{ url_for('predict') }}" class="btn btn-primary">Score Another Employee</a>
+          <a href="{{ url_for('home') }}" class="btn btn-outline">Back to Dashboard</a>
+        </div>
+      </div>
+
+      <!-- ===== DETAIL CARD ===== -->
+      <div class="detail-card">
+        <h3>Prediction Breakdown</h3>
+
+        <div style="margin-bottom:22px;">
+          <div class="detail-row"><span class="k">Probability of Leaving</span><span class="v">{{ prob_leave_pct }}%</span></div>
+          <div class="risk-bar-track"><div class="risk-bar-fill" style="width:{{ prob_leave_pct }}%; background:{{ risk_color }};"></div></div>
+          <div class="detail-row"><span class="k">Probability of Staying</span><span class="v">{{ prob_stay_pct }}%</span></div>
+          <div class="risk-bar-track"><div class="risk-bar-fill" style="width:{{ prob_stay_pct }}%; background:#17a892;"></div></div>
+        </div>
+
+        <h3>Employee Profile Submitted</h3>
+        <div class="detail-row"><span class="k">Age</span><span class="v">{{ employee.Age }}</span></div>
+        <div class="detail-row"><span class="k">Gender</span><span class="v">{{ employee.Gender }}</span></div>
+        <div class="detail-row"><span class="k">Department</span><span class="v">{{ employee.Department }}</span></div>
+        <div class="detail-row"><span class="k">Job Role</span><span class="v">{{ employee.JobRole }}</span></div>
+        <div class="detail-row"><span class="k">Monthly Income</span><span class="v">&#8377;{{ "{:,}".format(employee.MonthlyIncome) }}</span></div>
+        <div class="detail-row"><span class="k">Years at Company</span><span class="v">{{ employee.YearsAtCompany }}</span></div>
+        <div class="detail-row"><span class="k">Job Satisfaction</span><span class="v">{{ employee.JobSatisfaction }} / 4</span></div>
+        <div class="detail-row"><span class="k">Work Life Balance</span><span class="v">{{ employee.WorkLifeBalance }} / 4</span></div>
+        <div class="detail-row"><span class="k">Performance Rating</span><span class="v">{{ employee.PerformanceRating }} / 4</span></div>
+        <div class="detail-row"><span class="k">Overtime</span><span class="v">{{ employee.OverTime }}</span></div>
+        <div class="detail-row"><span class="k">Distance From Home</span><span class="v">{{ employee.DistanceFromHome }} km</span></div>
+        <div class="detail-row"><span class="k">Training Sessions Last Year</span><span class="v">{{ employee.TrainingTimesLastYear }}</span></div>
+
+        <h3 style="margin-top:26px;">What Drives This Model Most</h3>
+        <p style="font-size:0.84rem;color:var(--slate-600);margin-bottom:14px;">Overall feature importance from the trained Random Forest &mdash; not specific to this one prediction.</p>
+        {% for f in top_factors %}
+        <div class="detail-row"><span class="k">{{ f.feature }}</span><span class="v">{{ f.importance }}%</span></div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% block title %}Run a Prediction — AttritionIQ{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top:48px;">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">PREDICTION</span>
+      <h2>Enter employee details</h2>
+      <p>All fields are required. Values are validated on the client and re-checked on the server before scoring.</p>
+    </div>
+
+    {% if error %}
+    <div class="alert error">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span>{{ error }}</span>
+    </div>
+    {% endif %}
+
+    <div class="predict-shell">
+      <!-- ===== FORM ===== -->
+      <div class="form-card">
+        <h2>Employee Profile</h2>
+        <p>Fields marked with a range slider use a 1 (Low) &ndash; 4 (High) scale, matching standard HR survey scoring.</p>
+
+        <form id="predictForm" action="{{ url_for('predict') }}" method="POST" novalidate>
+          <div class="form-grid">
+
+            <div class="field">
+              <label for="Age">Age <span class="hint">(18&ndash;65)</span></label>
+              <input type="number" id="Age" name="Age" min="18" max="65" required
+                     value="{{ form_data.Age if form_data else '' }}" placeholder="e.g. 29">
+              <div class="error-msg" data-error-for="Age"></div>
+            </div>
+
+            <div class="field">
+              <label for="Gender">Gender</label>
+              <select id="Gender" name="Gender" required>
+                <option value="" disabled {{ 'selected' if not form_data }}>Select gender</option>
+                <option value="Male" {{ 'selected' if form_data and form_data.Gender=='Male' }}>Male</option>
+                <option value="Female" {{ 'selected' if form_data and form_data.Gender=='Female' }}>Female</option>
+              </select>
+              <div class="error-msg" data-error-for="Gender"></div>
+            </div>
+
+            <div class="field">
+              <label for="Department">Department</label>
+              <select id="Department" name="Department" required>
+                <option value="" disabled {{ 'selected' if not form_data }}>Select department</option>
+                <option value="Sales">Sales</option>
+                <option value="Research & Development">Research &amp; Development</option>
+                <option value="Human Resources">Human Resources</option>
+              </select>
+              <div class="error-msg" data-error-for="Department"></div>
+            </div>
+
+            <div class="field">
+              <label for="JobRole">Job Role</label>
+              <select id="JobRole" name="JobRole" required>
+                <option value="" disabled selected>Select job role</option>
+                <option value="Sales Executive">Sales Executive</option>
+                <option value="Sales Representative">Sales Representative</option>
+                <option value="Research Scientist">Research Scientist</option>
+                <option value="Research Director">Research Director</option>
+                <option value="Laboratory Technician">Laboratory Technician</option>
+                <option value="Manufacturing Director">Manufacturing Director</option>
+                <option value="Healthcare Representative">Healthcare Representative</option>
+                <option value="Manager">Manager</option>
+                <option value="Human Resources">Human Resources</option>
+              </select>
+              <div class="error-msg" data-error-for="JobRole"></div>
+            </div>
+
+            <div class="field">
+              <label for="MonthlyIncome">Monthly Income <span class="hint">(&#8377;)</span></label>
+              <input type="number" id="MonthlyIncome" name="MonthlyIncome" min="10000" max="300000" step="500" required
+                     placeholder="e.g. 45000">
+              <div class="error-msg" data-error-for="MonthlyIncome"></div>
+            </div>
+
+            <div class="field">
+              <label for="YearsAtCompany">Years at Company</label>
+              <input type="number" id="YearsAtCompany" name="YearsAtCompany" min="0" max="40" required
+                     placeholder="e.g. 3">
+              <div class="error-msg" data-error-for="YearsAtCompany"></div>
+            </div>
+
+            <div class="field">
+              <label for="DistanceFromHome">Distance From Home <span class="hint">(km)</span></label>
+              <input type="number" id="DistanceFromHome" name="DistanceFromHome" min="0" max="100" required
+                     placeholder="e.g. 8">
+              <div class="error-msg" data-error-for="DistanceFromHome"></div>
+            </div>
+
+            <div class="field">
+              <label for="TrainingTimesLastYear">Training Times Last Year <span class="hint">(0&ndash;6)</span></label>
+              <input type="number" id="TrainingTimesLastYear" name="TrainingTimesLastYear" min="0" max="6" required
+                     placeholder="e.g. 2">
+              <div class="error-msg" data-error-for="TrainingTimesLastYear"></div>
+            </div>
+
+            <div class="field range-field">
+              <label for="JobSatisfaction">Job Satisfaction</label>
+              <div class="range-row">
+                <input type="range" id="JobSatisfaction" name="JobSatisfaction" min="1" max="4" value="3" required>
+                <span class="range-value" data-value-for="JobSatisfaction">3</span>
+              </div>
+              <div class="error-msg" data-error-for="JobSatisfaction"></div>
+            </div>
+
+            <div class="field range-field">
+              <label for="WorkLifeBalance">Work Life Balance</label>
+              <div class="range-row">
+                <input type="range" id="WorkLifeBalance" name="WorkLifeBalance" min="1" max="4" value="3" required>
+                <span class="range-value" data-value-for="WorkLifeBalance">3</span>
+              </div>
+              <div class="error-msg" data-error-for="WorkLifeBalance"></div>
+            </div>
+
+            <div class="field range-field">
+              <label for="PerformanceRating">Performance Rating</label>
+              <div class="range-row">
+                <input type="range" id="PerformanceRating" name="PerformanceRating" min="1" max="4" value="3" required>
+                <span class="range-value" data-value-for="PerformanceRating">3</span>
+              </div>
+              <div class="error-msg" data-error-for="PerformanceRating"></div>
+            </div>
+
+            <div class="field">
+              <label for="OverTime">Overtime</label>
+              <select id="OverTime" name="OverTime" required>
+                <option value="" disabled selected>Does the employee work overtime?</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+              <div class="error-msg" data-error-for="OverTime"></div>
+            </div>
+
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-lg">Predict Attrition</button>
+            <span class="form-note">Runs the Random Forest model server-side and returns a scored result.</span>
+          </div>
+        </form>
+      </div>
+
+      <!-- ===== INFO SIDEBAR ===== -->
+      <div class="info-card">
+        <h3>How your data is used</h3>
+        <ul>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+            <span>Values are one-hot encoded and passed straight into the trained Random Forest pipeline — no external storage.</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+            <span>The 1&ndash;4 sliders map to standard HR survey scales: 1 = Low/Bad, 4 = Very High/Best.</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+            <span>Every field is validated before submission — impossible values (negative income, age outside range) are rejected.</span>
+          </li>
+        </ul>
+        <div class="divider"></div>
+        <h3>What you'll get back</h3>
+        <ul>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+            <span>A clear <strong>Likely to Stay</strong> or <strong>Likely to Leave</strong> verdict.</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+            <span>A confidence / probability percentage from the model's vote share.</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

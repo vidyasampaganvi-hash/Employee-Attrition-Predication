@@ -1,0 +1,33 @@
+{
+  "accuracy": 83.3,
+  "roc_auc": 81.6,
+  "dataset_size": 3000,
+  "attrition_rate": 16.4,
+  "n_estimators": 300,
+  "top_factors": [
+    {
+      "feature": "Overtime",
+      "importance": 21.4
+    },
+    {
+      "feature": "Job Satisfaction",
+      "importance": 10.9
+    },
+    {
+      "feature": "Distance From Home",
+      "importance": 10.5
+    },
+    {
+      "feature": "Monthly Income",
+      "importance": 9.6
+    },
+    {
+      "feature": "Years at Company",
+      "importance": 9.3
+    },
+    {
+      "feature": "Age",
+      "importance": 8.2
+    }
+  ]
+}
